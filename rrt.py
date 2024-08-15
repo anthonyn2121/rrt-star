@@ -95,7 +95,7 @@ class RRT:
         '''
         Get the closest node in the tree
         '''
-        cost_map = {node:cost(node, sample_node) for node in self.node}
+        cost_map = {node:distance(node, sample_node) for node in self.node}
         return min(cost_map, key=cost_map.get())
     
     def __steer(self, nearest_node:Node, sampled_node:Node, step_size=1.0) -> Node:
