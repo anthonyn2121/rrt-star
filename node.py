@@ -33,6 +33,8 @@ class Node:
     def __abs__(self):
         return Node(abs(self.x), abs(self.y), abs(self.z))
 
+    # def __eq__(self, rhs):
+    #     return ((self.x == rhs.x) and ((self.y == rhs.y) and (self.z == rhs.z)))
     @staticmethod
     def normalize(node):
         x, y, z = node.x, node.y, node.z
@@ -40,11 +42,10 @@ class Node:
         return Node(x/magnitude, y/magnitude, z/magnitude)
 
     def __str__(self):
-        return self.__repr__
-
+        return self.__repr__()
+    
     def __repr__(self):
-        return f"[{self.x}, {self.y}, {self.z}] parent={self.parent} cost = {self.cost}"
-
+        return (f"[{self.x}, {self.y}, {self.z}] cost = {self.cost}")
 
 if __name__ == "__main__":
     # Run this to unit test this class
