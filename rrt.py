@@ -125,7 +125,7 @@ class RRT:
 
     def __is_collision_free(self, from_node, to_node) -> bool:
         d = distance(from_node, to_node)
-        step_size = d/74
+        step_size = d/75
         while not (step_size >= d):
             point = self.__steer(from_node, to_node, step_size)
             if (not self.occupancy.is_valid_position(point.to_array()) or
@@ -154,9 +154,12 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', '-f', default="environment_toolkit/worlds/test_simple.json", help="json file that describes an environment")
+    parser.add_argument('--max-iters', type=int, default=2000, help="the maximum number of points to be sampled in one planning session")
+    parser.add_argument('--goal-radius', type=float, default=1.0, help="the margin of error the 'goal' of the tree can be within the actual goal")
     args = parser.parse_args()
 
-
+    max_iters = args.max_iters
+    goal_radius = args.goal_radius ## Probably should just use 'margin' in world.json file but easier for me to do this right now
     world_filepath = args.file
     with open(world_filepath, 'r') as file:
         world = json.load(file)
@@ -171,7 +174,7 @@ if __name__ == "__main__":
     rrt = RRT(env, resolution)
     waypoints = None
     while (not np.any(waypoints)):
-        waypoints = rrt.plan(start, goal, max_iters=2000, goal_radius=1.0)
+        waypoints = rrt.plan(start, goal, max_iters=max_iters, goal_radius=goal_radius)
     xs, ys, zs = zip(*waypoints)
 
     ax = env.get_plot()
