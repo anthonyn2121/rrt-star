@@ -92,6 +92,7 @@ class RRT:
 
             node = Node(x, y, z)
             if ((self.occupancy.is_valid_position(node.to_array())) and 
+                (not self.occupancy.is_occupied_position(node.to_array())) and
                 (node not in self.nodes)):
                 valid_node = True
 
@@ -162,7 +163,7 @@ if __name__ == "__main__":
     rrt = RRT(env, resolution)
     waypoints = None
     while (not np.any(waypoints)):
-        waypoints = rrt.plan(start, goal, max_iters=2000, goal_radius=0.5)
+        waypoints = rrt.plan(start, goal, max_iters=2000, goal_radius=1.0)
     xs, ys, zs = zip(*waypoints)
 
     ax = env.get_plot()
