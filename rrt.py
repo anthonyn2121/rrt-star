@@ -38,7 +38,8 @@ class RRT:
         goal_node = Node(goal[0], goal[1], goal[2])
         potential_best_node = None
         best_goal_node = None
-        for _ in range(max_iters):
+        iteration = 0
+        while iteration < max_iters:
             ## Randomly select a point in free space
             sampled_node = self.__random_sample()
             ## Find nearest vertex
@@ -66,6 +67,9 @@ class RRT:
             if ((best_goal_node is None) or 
                     (potential_best_node.cost < best_goal_node.cost)):
                 best_goal_node = potential_best_node
+                max_iters = iteration + 20
+
+            iteration += 1
         
         if (best_goal_node):
             node_path = self.__trace_path(best_goal_node)
