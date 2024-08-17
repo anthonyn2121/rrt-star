@@ -21,5 +21,5 @@ python3 rrt.py -f <json_file>
 ```
 Example:
 ```
-python3 rrt.py -f environment_toolkit/worlds/forest.json
+python3 rrt.py -f environment_toolkit/worlds/test_simple.json
 ```
