@@ -117,7 +117,11 @@ class RRT:
         if (step_size > distance(from_node, to_node)):
             return to_node
         v = abs(from_node - to_node) ## difference between vectors
-        return from_node + (step_size * Node.normalize(v))
+        steered_node = from_node + (step_size * Node.normalize(v))
+        new_x = self.resolution * round(steered_node.x/self.resolution)
+        new_y = self.resolution * round(steered_node.y/self.resolution)
+        new_z = self.resolution * round(steered_node.z/self.resolution)
+        return Node(new_x, new_y, new_z)
 
     def __is_collision_free(self, from_node, to_node) -> bool:
         d = distance(from_node, to_node)
