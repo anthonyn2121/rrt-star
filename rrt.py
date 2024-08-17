@@ -44,10 +44,10 @@ class RRT:
             ## Find nearest vertex
             nearest_node = self.__get_closest_node(sampled_node)
             ## Find the a point on the line from the nearest_node to the sampled_node within a step size
-            new_node = self.__steer(nearest_node, sampled_node, step_size=(distance(nearest_node, sampled_node)/4))
+            new_node = self.__steer(nearest_node, sampled_node, step_size=1.0)
             if (self.__is_collision_free(nearest_node, new_node)):
                 ## Find nearest nodes
-                RADIUS = 2.0
+                RADIUS = 1.0
                 nearest_nodes = {node:(get_path_cost(node) + distance(node, new_node)) 
                                     for node in self.nodes if (distance(node, new_node) < RADIUS)}
                 if (len(nearest_nodes) <= 0) : continue
@@ -110,19 +110,19 @@ class RRT:
         '''
         
         if (step_size > distance(from_node, to_node)):
-            raise AssertionError("Step size of __steer needs to be less than the distance between points\n"
-                                 f"nearest_node={from_node}, sampled_node={to_node}, step_size={step_size}")
+            return to_node
         v = abs(from_node - to_node) ## difference between vectors
         return from_node + (step_size * Node.normalize(v))
 
     def __is_collision_free(self, from_node, to_node) -> bool:
         d = distance(from_node, to_node)
-        step_sizes = np.linspace(0 + 0.00001, d-0.00001, 50)
-        for s in step_sizes:
-            point = self.__steer(from_node, to_node, step_size=s)
+        step_size = d/74
+        while not (step_size >= d):
+            point = self.__steer(from_node, to_node, step_size)
             if (not self.occupancy.is_valid_position(point.to_array()) or
                 self.occupancy.is_occupied_position(point.to_array())):
                 return False
+            step_size += step_size
         return True
 
     def __rewire(self, nearest_neighbors:dict, new_node:Node):
@@ -160,7 +160,9 @@ if __name__ == "__main__":
     resolution = world['resolution']
 
     rrt = RRT(env, resolution)
-    waypoints = rrt.plan(start, goal, max_iters=200)
+    waypoints = None
+    while (not np.any(waypoints)):
+        waypoints = rrt.plan(start, goal, max_iters=2000, goal_radius=0.5)
     xs, ys, zs = zip(*waypoints)
 
     ax = env.get_plot()

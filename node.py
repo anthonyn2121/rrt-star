@@ -14,6 +14,12 @@ class Node:
     def to_array(self):
         return np.array([self.x, self.y, self.z])
 
+    @staticmethod
+    def normalize(node):
+        x, y, z = node.x, node.y, node.z
+        magnitude = (x**2 + y**2 + z**2)**(0.5)
+        return Node(x/magnitude, y/magnitude, z/magnitude)
+    
     def __add__(self, rhs):
         return Node(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
     
@@ -33,13 +39,6 @@ class Node:
     def __abs__(self):
         return Node(abs(self.x), abs(self.y), abs(self.z))
 
-    # def __eq__(self, rhs):
-    #     return ((self.x == rhs.x) and ((self.y == rhs.y) and (self.z == rhs.z)))
-    @staticmethod
-    def normalize(node):
-        x, y, z = node.x, node.y, node.z
-        magnitude = (x**2 + y**2 + z**2)**(0.5)
-        return Node(x/magnitude, y/magnitude, z/magnitude)
 
     def __str__(self):
         return self.__repr__()
